@@ -20,49 +20,40 @@ class App extends React.Component {
     super(props)
     this.state = Object.assign({}, initialState);
     
-    this.handleDefaultChoiceTextChanged = this.handleDefaultChoiceTextChanged.bind(this);
     this.handleNewChoiceTextChanged = this.handleNewChoiceTextChanged.bind(this);
     this.handleAddChoiceClicked = this.handleAddChoiceClicked.bind(this)
-    this.handleAddDefaultChoiceClicked = this.handleAddDefaultChoiceClicked.bind(this)
     this.handleLabelTextChanged = this.handleLabelTextChanged.bind(this)
     this.handleSubmitClicked = this.handleSubmitClicked.bind(this)
     this.handleCancelClicked = this.handleCancelClicked.bind(this)
     this.handleValueRequiredChecked = this.handleValueRequiredChecked.bind(this)
     this.handleTypeSelected = this.handleTypeSelected.bind(this)
     this.handleOrderChange = this.handleOrderChange.bind(this)
-    this.handleChoiceClicked = this.handleChoiceClicked.bind(this)
+    this.handleDeleteChoiceClicked = this.handleDeleteChoiceClicked.bind(this)
+    this.handleSetDefaultChoiceClicked = this.handleSetDefaultChoiceClicked.bind(this)
   }
 
-  handleChoiceClicked(e, item) {
-    
-    var fruits = ["Banana", "Orange", "Apple", "Mango"];
-    var a = fruits.indexOf("Banana"); 
-    console.log("Banana index is " + a)   
-
-    const toBeDeletedChoice = item
-    console.log(`Choice clicked for [${toBeDeletedChoice}] ${typeof(toBeDeletedChoice)}`)
-
-    var array = [...this.state.choices];
-    console.log("Copied array is " + array + typeof(array))
-    array.forEach(e => {
-      console.log(e + typeof(e))
+  handleSetDefaultChoiceClicked(e, item) {
+    console.log(`Delte Choice clicked for [${item}] ${typeof(item)}`)
+    this.setState(state=>{
+      return {defaultChoice: item}
     })
+  }
 
-    console.log(`Finding ${toBeDeletedChoice} in it`)
+  handleDeleteChoiceClicked(e, item) {
+    const toBeDeletedChoice = item
+    console.log(`Delte Choice clicked for [${toBeDeletedChoice}] ${typeof(toBeDeletedChoice)}`)
+    var array = [...this.state.choices];
     var index = array.indexOf(toBeDeletedChoice)
-    console.log("Find index is: " + index)
+
+    // We may also need to clear the default choice 
+    const newDefaultChoice = item === this.state.defaultChoice ? '' : this.state.defaultChoice
     
     if (index !== -1) {
       array.splice(index, 1);
       this.setState(state => {
-        return {choices: array}
+        return {choices: array, defaultChoice: newDefaultChoice}
       })
     }
-    
-    
-   
-   
-
   }
 
   handleOrderChange(e) {
@@ -108,12 +99,7 @@ class App extends React.Component {
       return {label: e.target.value}
     })
   }
-  
-  handleDefaultChoiceTextChanged(e) {
-    this.setState(state => {
-      return {defaultChoice: e.target.value}
-    })
-  }
+
 
   handleNewChoiceTextChanged(e) {
     this.setState(state => {
@@ -132,18 +118,6 @@ class App extends React.Component {
       
     })      
   };
-
-  handleAddDefaultChoiceClicked(e) {
-    this.setState(state => {
-      if (this.state.choices.includes(this.state.defaultChoice)) {
-        console.log(`DefaultChoice set, and it (${this.state.defaultChoice}) it already in choices list`)
-      } else {
-        const next = this.state.choices.concat(this.state.defaultChoice)
-        return {choices: next}
-      }
-    })
-};
-
 
   render() {
     return (
@@ -174,18 +148,21 @@ class App extends React.Component {
         <br/>
         <br/>
 
-        <label>Default Value </label>
-        <input value={this.state.defaultChoice} onChange={this.handleDefaultChoiceTextChanged} type="text"/>
-        <button type="button" name="add-default-value" onClick={this.handleAddDefaultChoiceClicked}> Add default value</button>
-        <br/>
-        <br/>
-
         <label>Choices [click on an added choice to delete it]</label>
         <ul className="choices">
           {this.state.choices.map(item => 
             this.state.defaultChoice === item ? 
-              <li key={item}><b> <div value={item} onClick={e => this.handleChoiceClicked(e, item)} className="clickChoiceBox"> {item} </div> </b></li> 
-            : <li key={item}> <div value={item} onClick={e => this.handleChoiceClicked(e, item)} className="clickChoiceBox"> {item} </div></li>
+              <li key={item}>
+                <p className='inner'><b> {item}</b></p> 
+                <button className='inner' value={item} onClick={e => this.handleDeleteChoiceClicked(e, item)} className="clickChoiceBox">delete</button> 
+                <button className='inner' value={item} onClick={e => this.handleSetDefaultChoiceClicked(e, item)} className="clickChoiceBox">set as default</button> 
+
+              </li> 
+            : <li key={item}>
+                <p className='inner'> {item} </p> 
+                <button className='inner' value={item} onClick={e => this.handleDeleteChoiceClicked(e, item)} className="clickChoiceBox"> delete</button>
+                <button className='inner' value={item} onClick={e => this.handleSetDefaultChoiceClicked(e, item)} className="clickChoiceBox">set as default</button> 
+              </li>
           )}
         </ul>
         <br/>
