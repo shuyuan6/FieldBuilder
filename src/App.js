@@ -2,20 +2,23 @@ import logo from './logo.svg';
 import './App.css';
 import React from 'react';
 
+const initialState = {
+  choices: [],
+  defaultChoice: '',
+  newChoice: '',
+  label: '',
+  valueRequired: false,
+  type: '',
+  order: '',
+}
+
 
 class App extends React.Component {
 
+  
   constructor(props) {
     super(props)
-    this.state = {
-      choices: [],
-      defaultChoice: '',
-      newChoice: '',
-      label: '',
-      valueRequired: false,
-      type: '',
-      ordera: '',
-    }
+    this.state = Object.assign({}, initialState);
     
     this.handleDefaultChoiceTextChanged = this.handleDefaultChoiceTextChanged.bind(this);
     this.handleNewChoiceTextChanged = this.handleNewChoiceTextChanged.bind(this);
@@ -26,11 +29,15 @@ class App extends React.Component {
     this.handleCancelClicked = this.handleCancelClicked.bind(this)
     this.handleValueRequiredChecked = this.handleValueRequiredChecked.bind(this)
     this.handleTypeSelected = this.handleTypeSelected.bind(this)
-    this.handleOrderChange = this.handleOrderChange(this)
+    this.handleOrderChange = this.handleOrderChange.bind(this)
   }
 
   handleOrderChange(e) {
     console.log("Order changed!")
+    this.setState(state => {
+      return {order: e.target.value}
+    })
+
     //this.setState({ order: e.target.value });
   }
 
@@ -53,20 +60,14 @@ class App extends React.Component {
   handleCancelClicked(e) {
     console.log('Cancel clicked. Clearing all fields')
     this.setState(state => {
-      return {
-        choices: [],
-        defaultChoice: '',
-        newChoice: '',
-        label: '',
-        valueRequired: false,
-        type: '',
-        ordera: ''
-      }
+      return Object.assign({}, initialState);
     })
   }
 
   handleSubmitClicked(e) {
-    console.log(`Submit clicked, data to be sent is ${JSON.stringify(this.state)}`)
+    var toSend = Object.assign({}, this.state);
+    delete toSend['newChoice'];
+    console.log(`Submit clicked, data to be sent is ${JSON.stringify(toSend)}`)
   }
 
   handleLabelTextChanged(e) {
@@ -102,7 +103,7 @@ class App extends React.Component {
   handleAddDefaultChoiceClicked(e) {
     this.setState(state => {
       if (this.state.choices.includes(this.state.defaultChoice)) {
-        console.log(`Trying to add default choice, but choice ${this.state.defaultChoice} already there; will do nothing`)
+        console.log(`DefaultChoice set, and it (${this.state.defaultChoice}) it already in choices list`)
       } else {
         const next = this.state.choices.concat(this.state.defaultChoice)
         return {choices: next}
@@ -162,7 +163,7 @@ class App extends React.Component {
         <br/>
 
         <label >Order</label>
-        <select>
+        <select onChange={this.handleOrderChange}>
           <option value="alphabetical">Display choices in alphabetical order</option>
           <option value="reverse-alphabetical">Display choices in reverse order</option>
           <option value="random">Display choices in random order</option>
