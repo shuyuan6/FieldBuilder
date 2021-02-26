@@ -149,9 +149,9 @@ class App extends React.Component {
 
         <label>Choices </label>
         <ul className="choices">
-          {this.state.choices.map(e => (
-            <li key={e}>{e}</li>
-          ))}
+          {this.state.choices.map(e => 
+            this.state.defaultChoice === e ? (<li key={e}><b>{e}</b></li>) : (<li key={e}>{e}</li>)
+          )}
         </ul>
         <br/>
         <br/>
