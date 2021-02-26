@@ -1,6 +1,7 @@
 import logo from './logo.svg';
 import './App.css';
-import React, { useState } from 'react';
+import React from 'react';
+
 
 class App extends React.Component {
 
@@ -11,6 +12,9 @@ class App extends React.Component {
       defaultChoice: '',
       newChoice: '',
       label: '',
+      valueRequired: false,
+      type: '',
+      ordera: '',
     }
     
     this.handleDefaultChoiceTextChanged = this.handleDefaultChoiceTextChanged.bind(this);
@@ -19,7 +23,46 @@ class App extends React.Component {
     this.handleAddDefaultChoiceClicked = this.handleAddDefaultChoiceClicked.bind(this)
     this.handleLabelTextChanged = this.handleLabelTextChanged.bind(this)
     this.handleSubmitClicked = this.handleSubmitClicked.bind(this)
-  
+    this.handleCancelClicked = this.handleCancelClicked.bind(this)
+    this.handleValueRequiredChecked = this.handleValueRequiredChecked.bind(this)
+    this.handleTypeSelected = this.handleTypeSelected.bind(this)
+    this.handleOrderChange = this.handleOrderChange(this)
+  }
+
+  handleOrderChange(e) {
+    console.log("Order changed!")
+    //this.setState({ order: e.target.value });
+  }
+
+  handleTypeSelected(e) {
+    const { name, value } = e.target;
+    console.log("Radio button selected")
+    this.setState(state => {
+      return {type: value}
+    })
+  }
+
+  handleValueRequiredChecked(e) {
+    var checked = e.target.checked;
+    console.log("Checked: " + checked)
+    this.setState(state => {
+      return {valueRequired: checked}
+    })
+  }
+
+  handleCancelClicked(e) {
+    console.log('Cancel clicked. Clearing all fields')
+    this.setState(state => {
+      return {
+        choices: [],
+        defaultChoice: '',
+        newChoice: '',
+        label: '',
+        valueRequired: false,
+        type: '',
+        ordera: ''
+      }
+    })
   }
 
   handleSubmitClicked(e) {
@@ -44,7 +87,6 @@ class App extends React.Component {
     })
   }
 
-
   handleAddChoiceClicked(e) {
     this.setState(state => {
       if (this.state.choices.includes(this.state.newChoice)) {
@@ -54,9 +96,7 @@ class App extends React.Component {
         return {choices: next}
       }
       
-    })
-    //console.log(this.state)
-      
+    })      
   };
 
   handleAddDefaultChoiceClicked(e) {
@@ -78,7 +118,7 @@ class App extends React.Component {
       <div className="field-builder-title">
         Field Builder
       </div>
-      <form>
+      
       <div className="field-builder-body">
         <label>Label </label>
         <input type="text" value={this.state.label} onChange={this.handleLabelTextChanged}/>
@@ -86,15 +126,17 @@ class App extends React.Component {
         <br/>
 
         <label>Type </label>
+        <div onChange={this.handleTypeSelected}>
         <label>multi-select</label>
         <input type="radio" id="multi-select" name="select-type" value="multi-select"/>
         <label>single-select</label>
         <input type="radio" id="single-select" name="select-type" value="single-select"/>
+        </div>
         <br/>
         <br/>
 
         <label>A Value is Required </label>
-        <input type="checkbox" id="value-required" name="vehivalue-required" value="value-required"></input>
+        <input type="checkbox" id="value-required" onChange={this.handleValueRequiredChecked} checked={this.state.valueRequired}></input>
         <br/>
         <br/>
 
@@ -114,13 +156,13 @@ class App extends React.Component {
         <br/>
 
         <label >New Choice </label>
-        <input value={this.state.newChoice} onChange={this.handleNewChoiceTextChanged} type="text" id="new-choice" name="new-choice"/>
+        <input value={this.state.newChoice} onChange={this.handleNewChoiceTextChanged} type="text"/>
         <button type="button" onClick={this.handleAddChoiceClicked}> Add choice</button>
         <br/>
         <br/>
 
         <label >Order</label>
-        <select name="order" id="order">
+        <select>
           <option value="alphabetical">Display choices in alphabetical order</option>
           <option value="reverse-alphabetical">Display choices in reverse order</option>
           <option value="random">Display choices in random order</option>
@@ -129,10 +171,10 @@ class App extends React.Component {
 
         <button type="button" name="submit-button" onClick={this.handleSubmitClicked}> Submit</button>
         <p> or </p>
-        <button type="button" name="cancel-button"> Cancel</button>
+        <button type="button" name="cancel-button" onClick={this.handleCancelClicked}> Cancel</button>
 
       </div>
-      </form>
+     
       
     </div>
     )
