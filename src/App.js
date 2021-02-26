@@ -32,6 +32,18 @@ class App extends React.Component {
     this.handleSetDefaultChoiceClicked = this.handleSetDefaultChoiceClicked.bind(this)
   }
 
+  async sendPostRequest(input) {
+    // POST request using fetch with async/await
+    const requestOptions = {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(input)
+    };
+    const response = await fetch('http://www.mocky.io/v2/566061f21200008e3aabd919', requestOptions);
+    const data = await response.json();
+    return data
+}
+
   handleSetDefaultChoiceClicked(e, item) {
     console.log(`Delte Choice clicked for [${item}] ${typeof(item)}`)
     this.setState(state=>{
@@ -88,10 +100,13 @@ class App extends React.Component {
     })
   }
 
-  handleSubmitClicked(e) {
+  async handleSubmitClicked(e) {
     var toSend = Object.assign({}, this.state);
     delete toSend['newChoice'];
     console.log(`Submit clicked, data to be sent is ${JSON.stringify(toSend)}`)
+    const ret = await this.sendPostRequest(toSend)
+    console.log(`Get response back ${JSON.stringify(ret)}`)
+
   }
 
   handleLabelTextChanged(e) {
