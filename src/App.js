@@ -30,6 +30,39 @@ class App extends React.Component {
     this.handleValueRequiredChecked = this.handleValueRequiredChecked.bind(this)
     this.handleTypeSelected = this.handleTypeSelected.bind(this)
     this.handleOrderChange = this.handleOrderChange.bind(this)
+    this.handleChoiceClicked = this.handleChoiceClicked.bind(this)
+  }
+
+  handleChoiceClicked(e, item) {
+    
+    var fruits = ["Banana", "Orange", "Apple", "Mango"];
+    var a = fruits.indexOf("Banana"); 
+    console.log("Banana index is " + a)   
+
+    const toBeDeletedChoice = item
+    console.log(`Choice clicked for [${toBeDeletedChoice}] ${typeof(toBeDeletedChoice)}`)
+
+    var array = [...this.state.choices];
+    console.log("Copied array is " + array + typeof(array))
+    array.forEach(e => {
+      console.log(e + typeof(e))
+    })
+
+    console.log(`Finding ${toBeDeletedChoice} in it`)
+    var index = array.indexOf(toBeDeletedChoice)
+    console.log("Find index is: " + index)
+    
+    if (index !== -1) {
+      array.splice(index, 1);
+      this.setState(state => {
+        return {choices: array}
+      })
+    }
+    
+    
+   
+   
+
   }
 
   handleOrderChange(e) {
@@ -147,10 +180,12 @@ class App extends React.Component {
         <br/>
         <br/>
 
-        <label>Choices </label>
+        <label>Choices [click on an added choice to delete it]</label>
         <ul className="choices">
-          {this.state.choices.map(e => 
-            this.state.defaultChoice === e ? (<li key={e}><b>{e}</b></li>) : (<li key={e}>{e}</li>)
+          {this.state.choices.map(item => 
+            this.state.defaultChoice === item ? 
+              <li key={item}><b> <div value={item} onClick={e => this.handleChoiceClicked(e, item)} className="clickChoiceBox"> {item} </div> </b></li> 
+            : <li key={item}> <div value={item} onClick={e => this.handleChoiceClicked(e, item)} className="clickChoiceBox"> {item} </div></li>
           )}
         </ul>
         <br/>
