@@ -1,7 +1,7 @@
 import logo from './logo.svg';
-import './App.css';
 import React from 'react';
-
+import "./App.css";
+//import styles from "./App.css";
 const initialState = {
   choices: [],
   defaultChoice: '',
@@ -30,6 +30,7 @@ class App extends React.Component {
     this.handleOrderChange = this.handleOrderChange.bind(this)
     this.handleDeleteChoiceClicked = this.handleDeleteChoiceClicked.bind(this)
     this.handleSetDefaultChoiceClicked = this.handleSetDefaultChoiceClicked.bind(this)
+    
   }
 
   async sendPostRequest(input) {
@@ -53,7 +54,7 @@ class App extends React.Component {
 
   handleDeleteChoiceClicked(e, item) {
     const toBeDeletedChoice = item
-    console.log(`Delte Choice clicked for [${toBeDeletedChoice}] ${typeof(toBeDeletedChoice)}`)
+    console.log(`Delete Choice clicked for [${toBeDeletedChoice}] ${typeof(toBeDeletedChoice)}`)
     var array = [...this.state.choices];
     var index = array.indexOf(toBeDeletedChoice)
 
@@ -133,74 +134,87 @@ class App extends React.Component {
       
     })      
   };
-
+  /*
+<label className='column'>Label </label>
+          <input className='column' type="text" value={this.state.label} onChange={this.handleLabelTextChanged}/>
+          */
   render() {
     return (
-    <div className="App">
+    <div className='container'>
       
-      <div className="field-builder-title">
+      <div className='fieldBuilder'>
         Field Builder
       </div>
+      <br/>
       
-      <div className="field-builder-body">
-        <label>Label </label>
-        <input type="text" value={this.state.label} onChange={this.handleLabelTextChanged}/>
-        <br/>
-        <br/>
+      <div>
+        <div className='row'>
+          <label className='leftColumn'> Label </label>
+          <input className='rightColumn' type="text" value={this.state.label} onChange={this.handleLabelTextChanged}/>
+        </div>
 
-        <label>Type </label>
-        <div onChange={this.handleTypeSelected}>
-        <label>multi-select</label>
-        <input type="radio" id="multi-select" name="select-type" value="multi-select"/>
-        <label>single-select</label>
-        <input type="radio" id="single-select" name="select-type" value="single-select"/>
+        <div className='row'>
+          <label className='leftColumn'>Type </label>
+          <div className='rightColumn' onChange={this.handleTypeSelected}>
+            <label>multi-select</label>
+            <input type="radio" id="multi-select" name="select-type" value="multi-select"/>
+            <label>single-select</label>
+            <input type="radio" id="single-select" name="select-type" value="single-select"/>
+          </div>
+        </div>
+
+        <div className='row'>
+          <label className='leftColumn'>A Value is Required </label>
+          <input type="checkbox" id="value-required" onChange={this.handleValueRequiredChecked} checked={this.state.valueRequired}></input>
+        </div>
+        
+        <div className='row'>
+          <label className='leftColumn'>Choices</label>
+          <ul className='rightColumn' className='choices'>
+            {this.state.choices.map(item => 
+              this.state.defaultChoice === item ? 
+                
+                <li key={item}>
+                  <button className='inner' value={item} onClick={e => this.handleDeleteChoiceClicked(e, item)} className="clickChoiceBox">delete</button> 
+                  <button className='inner' value={item} onClick={e => this.handleSetDefaultChoiceClicked(e, item)} className="clickChoiceBox">set as default</button> 
+                  <p className='inner'><b> {item}</b></p> 
+                </li>
+                
+              : <li key={item}>
+                  <button className='inner' value={item} onClick={e => this.handleDeleteChoiceClicked(e, item)} className="clickChoiceBox"> delete</button>
+                  <button className='inner' value={item} onClick={e => this.handleSetDefaultChoiceClicked(e, item)} className="clickChoiceBox">set as default</button> 
+                  <p className='inner'> {item} </p> 
+                </li>
+            )}
+          </ul>
         </div>
         <br/>
-        <br/>
 
-        <label>A Value is Required </label>
-        <input type="checkbox" id="value-required" onChange={this.handleValueRequiredChecked} checked={this.state.valueRequired}></input>
-        <br/>
-        <br/>
+        <div className='row'>
+          <label className='leftColumn' >New Choice </label>
+          <div className='rightColumn'>
+            <input className='newChoiceTextField' value={this.state.newChoice} onChange={this.handleNewChoiceTextChanged} type="text"/>
+            <button className='addChoiceButton' type="button" onClick={this.handleAddChoiceClicked}> Add choice</button>
+          </div>
+        </div>
 
-        <label>Choices [click on an added choice to delete it]</label>
-        <ul className="choices">
-          {this.state.choices.map(item => 
-            this.state.defaultChoice === item ? 
-              <li key={item}>
-                <p className='inner'><b> {item}</b></p> 
-                <button className='inner' value={item} onClick={e => this.handleDeleteChoiceClicked(e, item)} className="clickChoiceBox">delete</button> 
-                <button className='inner' value={item} onClick={e => this.handleSetDefaultChoiceClicked(e, item)} className="clickChoiceBox">set as default</button> 
+        <div className='row'>
+          <label className='leftColumn'>Order</label>
+          <select className='rightColumn' onChange={this.handleOrderChange}>
+            <option value="alphabetical">Display choices in alphabetical order</option>
+            <option value="reverse-alphabetical">Display choices in reverse order</option>
+            <option value="random">Display choices in random order</option>
+          </select>
+        </div>
 
-              </li> 
-            : <li key={item}>
-                <p className='inner'> {item} </p> 
-                <button className='inner' value={item} onClick={e => this.handleDeleteChoiceClicked(e, item)} className="clickChoiceBox"> delete</button>
-                <button className='inner' value={item} onClick={e => this.handleSetDefaultChoiceClicked(e, item)} className="clickChoiceBox">set as default</button> 
-              </li>
-          )}
-        </ul>
-        <br/>
-        <br/>
-
-        <label >New Choice </label>
-        <input value={this.state.newChoice} onChange={this.handleNewChoiceTextChanged} type="text"/>
-        <button type="button" onClick={this.handleAddChoiceClicked}> Add choice</button>
-        <br/>
-        <br/>
-
-        <label >Order</label>
-        <select onChange={this.handleOrderChange}>
-          <option value="alphabetical">Display choices in alphabetical order</option>
-          <option value="reverse-alphabetical">Display choices in reverse order</option>
-          <option value="random">Display choices in random order</option>
-        </select>
         <br/><br/>
-
-        <button type="button" name="submit-button" onClick={this.handleSubmitClicked}> Submit</button>
-        <p> or </p>
-        <button type="button" name="cancel-button" onClick={this.handleCancelClicked}> Cancel</button>
-
+        <div className='row' >
+          <center>
+            <button className='submissonButton' type="button" name="submit-button" onClick={this.handleSubmitClicked}> Submit</button>
+            <p className='inner'> or </p>
+            <button className='cancelButton' type="button" name="cancel-button" onClick={this.handleCancelClicked}> Cancel</button>
+          </center>
+        </div>
       </div>
      
       
