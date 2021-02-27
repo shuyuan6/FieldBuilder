@@ -1,17 +1,18 @@
-import logo from './logo.svg';
 import React from 'react';
 import "./App.css";
-//import styles from "./App.css";
+
+const displayOrders = ['alphabetical', 'reverse-alphabetical', 'random']
+const questionTypes = ['Single Choice', 'Multi Choice']
+
 const initialState = {
   choices: [],
   defaultChoice: '',
   newChoice: '',
   label: '',
   valueRequired: false,
-  type: '',
-  order: '',
+  type: questionTypes[0],
+  order: displayOrders[0],
 }
-
 
 class App extends React.Component {
 
@@ -30,7 +31,6 @@ class App extends React.Component {
     this.handleOrderChange = this.handleOrderChange.bind(this)
     this.handleDeleteChoiceClicked = this.handleDeleteChoiceClicked.bind(this)
     this.handleSetDefaultChoiceClicked = this.handleSetDefaultChoiceClicked.bind(this)
-    
   }
 
   async sendPostRequest(input) {
@@ -116,7 +116,6 @@ class App extends React.Component {
     })
   }
 
-
   handleNewChoiceTextChanged(e) {
     this.setState(state => {
       return {newChoice: e.target.value}
@@ -129,9 +128,8 @@ class App extends React.Component {
         console.log(`Choice ${this.state.newChoice} already there; will do nothing`)
       } else {
         const next = this.state.choices.concat(this.state.newChoice)
-        return {choices: next}
+        return {choices: next, newChoice: ''}
       }
-      
     })      
   };
   /*
@@ -156,10 +154,9 @@ class App extends React.Component {
         <div className='row'>
           <label className='leftColumn'>Type </label>
           <div className='rightColumn' onChange={this.handleTypeSelected}>
-            <label>multi-select</label>
-            <input type="radio" id="multi-select" name="select-type" value="multi-select"/>
-            <label>single-select</label>
-            <input type="radio" id="single-select" name="select-type" value="single-select"/>
+            {questionTypes.map(item =>
+              <div key={item} className='inner'><label>{item}</label> <input type="radio" name="select-type" value={item}/></div>
+              )}
           </div>
         </div>
 
@@ -172,19 +169,11 @@ class App extends React.Component {
           <label className='leftColumn'>Choices</label>
           <ul className='rightColumn' className='choices'>
             {this.state.choices.map(item => 
-              this.state.defaultChoice === item ? 
-                
-                <li key={item}>
+              <li key={item}>
                   <button className='inner' value={item} onClick={e => this.handleDeleteChoiceClicked(e, item)} className="clickChoiceBox">delete</button> 
                   <button className='inner' value={item} onClick={e => this.handleSetDefaultChoiceClicked(e, item)} className="clickChoiceBox">set as default</button> 
-                  <p className='inner'><b> {item}</b></p> 
-                </li>
-                
-              : <li key={item}>
-                  <button className='inner' value={item} onClick={e => this.handleDeleteChoiceClicked(e, item)} className="clickChoiceBox"> delete</button>
-                  <button className='inner' value={item} onClick={e => this.handleSetDefaultChoiceClicked(e, item)} className="clickChoiceBox">set as default</button> 
-                  <p className='inner'> {item} </p> 
-                </li>
+                  {this.state.defaultChoice === item ?  (<p className='inner'><b> {item}</b></p>) :  (<p className='inner'>{item}</p>) }
+              </li>
             )}
           </ul>
         </div>
@@ -201,9 +190,8 @@ class App extends React.Component {
         <div className='row'>
           <label className='leftColumn'>Order</label>
           <select className='rightColumn' onChange={this.handleOrderChange}>
-            <option value="alphabetical">Display choices in alphabetical order</option>
-            <option value="reverse-alphabetical">Display choices in reverse order</option>
-            <option value="random">Display choices in random order</option>
+            {displayOrders.map(item =>
+              <option key={item} value={item}>{item}</option>)}
           </select>
         </div>
 

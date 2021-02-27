@@ -2,6 +2,10 @@
   box-sizing: border-box;
 }
 
+ul {
+  padding-inline-start: 10px;
+}
+
 .container {
   background: white;
   border: 1px solid skyblue;
@@ -113,7 +117,7 @@
   height: 110px;
   min-height: 101%;
   overflow-y: scroll;
-  margin: 10px;
+  
   list-style-type: none;
 }
 
