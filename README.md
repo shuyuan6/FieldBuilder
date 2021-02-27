@@ -1,3 +1,8 @@
+# UI
+
+The UX experience would be like this.
+![ui](https://github.com/shuyuan6/FieldBuilder/blob/master/ui_screen_shot.png?raw=true)
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
