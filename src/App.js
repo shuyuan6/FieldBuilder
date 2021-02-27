@@ -149,6 +149,7 @@ class App extends React.Component {
     this.setState(state => {
       if (this.state.choices.includes(this.state.newChoice)) {
         console.log(`Choice ${this.state.newChoice} already there; will do nothing`)
+        return {message: "You don't need to add a duplicate choice.", messageColor: 'red'}
       } else {
         const next = this.state.choices.concat(this.state.newChoice)
         return {choices: next, newChoice: ''}
