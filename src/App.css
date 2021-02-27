@@ -27,6 +27,10 @@
   cursor: pointer;
 }
 
+.content {
+  margin: 10px;
+}
+
 .leftColumn {
   padding-left: 10px;
   float: left;
@@ -38,16 +42,18 @@
   float: left;
   width: 70%;
   height: 40px;
-  padding-right: 10px;
+  
 }
 
 .row:after {
   content: "";
   display: table;
   clear: both;
+  margin: 10px;
 }
 
 .submissonButton {
+  border-radius: 10px;
   background-color: #4caf50;
   border: none;
   color: white;
@@ -61,6 +67,7 @@
 }
 
 .cancelButton {
+  border-radius: 10px;
   background-color: #b92e2e;
   border: none;
   color: white;
@@ -101,11 +108,12 @@
 }
 
 .choices {
+  border-radius: 10px;
   background-color: rgb(226, 226, 226);
   height: 110px;
   min-height: 101%;
   overflow-y: scroll;
-  margin: auto;
+  margin: 10px;
   list-style-type: none;
 }
 

@@ -147,7 +147,7 @@ class App extends React.Component {
       </div>
       <br/>
       
-      <div>
+      <div className='content'>
         <div className='row'>
           <label className='leftColumn'> Label </label>
           <input className='rightColumn' type="text" value={this.state.label} onChange={this.handleLabelTextChanged}/>
