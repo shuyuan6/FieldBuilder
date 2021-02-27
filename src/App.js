@@ -18,7 +18,6 @@ const initialState = {
 
 class App extends React.Component {
 
-  
   constructor(props) {
     super(props)
     this.state = Object.assign({}, initialState);
@@ -54,9 +53,10 @@ class App extends React.Component {
     } else if (toSend['choices'].length === 0) {
       this.setState({message: 'Choices are empty. Please fix and resubmit.', messageColor: 'red'})
       return false
-    }
-    
-    else {
+    } else if (toSend['choices'].length > 50) {
+      this.setState({message: 'You cannot provide more than 50 choices. Please fix and resubmit.', messageColor: 'red'})
+      return false
+    } else {
       this.setState({message: 'Congratulations! Submitted succesfully', messageColor: 'green'})
       setTimeout(function(){
         this.setState({message: ''})
@@ -77,7 +77,6 @@ class App extends React.Component {
     console.log(`Submit clicked. Data to be sent is ${JSON.stringify(toSend)}`)
     const ret = await this.sendPostRequest(toSend)
     console.log(`Got response back ${JSON.stringify(ret)}`)
-
   }
 
   handleSetDefaultChoiceClicked(e, item) {
@@ -230,7 +229,6 @@ class App extends React.Component {
             <button className='cancelButton' type="button" name="cancel-button" onClick={this.handleCancelClicked}> Cancel</button>
           </center>
         </div>
-
        
       </div>
     </div>
