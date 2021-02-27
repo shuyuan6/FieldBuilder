@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { isValidElement } from 'react';
 import "./App.css";
 
 const displayOrders = ['alphabetical', 'reverse-alphabetical', 'random']
@@ -12,6 +12,8 @@ const initialState = {
   valueRequired: false,
   type: questionTypes[0],
   order: displayOrders[0],
+  message: '',
+  messageColor: 'red',
 }
 
 class App extends React.Component {
@@ -43,7 +45,40 @@ class App extends React.Component {
     const response = await fetch('http://www.mocky.io/v2/566061f21200008e3aabd919', requestOptions);
     const data = await response.json();
     return data
-}
+  }
+
+  isValid(toSend) {
+    if (toSend['label'] === '') {
+      this.setState({message: 'Label is empty. Please fix and resubmit.', messageColor: 'red'})
+      return false
+    } else if (toSend['choices'].length === 0) {
+      this.setState({message: 'Choices are empty. Please fix and resubmit.', messageColor: 'red'})
+      return false
+    }
+    
+    else {
+      this.setState({message: 'Congratulations! Submitted succesfully', messageColor: 'green'})
+      setTimeout(function(){
+        this.setState({message: ''})
+      }.bind(this),2000); 
+      return true
+    }
+  }
+
+  async handleSubmitClicked(e) {
+    var toSend = Object.assign({}, this.state);
+    delete toSend['newChoice'];
+    delete toSend['message']
+    delete toSend['messageColor']
+    if (!this.isValid(toSend)) {
+      console.log("Information filled is not valid")
+      return
+    }
+    console.log(`Submit clicked. Data to be sent is ${JSON.stringify(toSend)}`)
+    const ret = await this.sendPostRequest(toSend)
+    console.log(`Got response back ${JSON.stringify(ret)}`)
+
+  }
 
   handleSetDefaultChoiceClicked(e, item) {
     console.log(`Delte Choice clicked for [${item}] ${typeof(item)}`)
@@ -74,8 +109,6 @@ class App extends React.Component {
     this.setState(state => {
       return {order: e.target.value}
     })
-
-    //this.setState({ order: e.target.value });
   }
 
   handleTypeSelected(e) {
@@ -101,15 +134,6 @@ class App extends React.Component {
     })
   }
 
-  async handleSubmitClicked(e) {
-    var toSend = Object.assign({}, this.state);
-    delete toSend['newChoice'];
-    console.log(`Submit clicked, data to be sent is ${JSON.stringify(toSend)}`)
-    const ret = await this.sendPostRequest(toSend)
-    console.log(`Get response back ${JSON.stringify(ret)}`)
-
-  }
-
   handleLabelTextChanged(e) {
     this.setState(state => {
       return {label: e.target.value}
@@ -132,10 +156,7 @@ class App extends React.Component {
       }
     })      
   };
-  /*
-<label className='column'>Label </label>
-          <input className='column' type="text" value={this.state.label} onChange={this.handleLabelTextChanged}/>
-          */
+
   render() {
     return (
     <div className='container'>
@@ -143,26 +164,28 @@ class App extends React.Component {
       <div className='fieldBuilder'>
         Field Builder
       </div>
-      <br/>
       
       <div className='content'>
         <div className='row'>
-          <label className='leftColumn'> Label </label>
+          <label className='leftColumn'>Label</label>
           <input className='rightColumn' type="text" value={this.state.label} onChange={this.handleLabelTextChanged}/>
         </div>
 
         <div className='row'>
-          <label className='leftColumn'>Type </label>
+          <label className='leftColumn'>Type</label>
           <div className='rightColumn' onChange={this.handleTypeSelected}>
             {questionTypes.map(item =>
-              <div key={item} className='inner'><label>{item}</label> <input type="radio" name="select-type" value={item}/></div>
-              )}
+              <div key={item} className='inner'>
+                <label>{item}</label>
+                <input type="radio" name="select-type" value={item} onChange={()=>{}} checked={this.state.type === item}/>
+              </div>
+            )}
           </div>
         </div>
 
         <div className='row'>
           <label className='leftColumn'>A Value is Required </label>
-          <input type="checkbox" id="value-required" onChange={this.handleValueRequiredChecked} checked={this.state.valueRequired}></input>
+          <input type="checkbox" onChange={this.handleValueRequiredChecked} checked={this.state.valueRequired}></input>
         </div>
         
         <div className='row'>
@@ -177,13 +200,12 @@ class App extends React.Component {
             )}
           </ul>
         </div>
-        <br/>
 
         <div className='row'>
           <label className='leftColumn' >New Choice </label>
           <div className='rightColumn'>
-            <input className='newChoiceTextField' value={this.state.newChoice} onChange={this.handleNewChoiceTextChanged} type="text"/>
-            <button className='addChoiceButton' type="button" onClick={this.handleAddChoiceClicked}> Add choice</button>
+            <textarea className='newChoiceTextField' value={this.state.newChoice} onChange={this.handleNewChoiceTextChanged} cols="40" rows="5"></textarea>
+            <button className='addChoiceButton' type="button" onClick={this.handleAddChoiceClicked}>Add</button>
           </div>
         </div>
 
@@ -195,7 +217,12 @@ class App extends React.Component {
           </select>
         </div>
 
-        <br/><br/>
+        <div className='row' style={{color: this.state.messageColor}}>
+          <center>
+            {this.state.message}
+          </center>
+        </div>
+
         <div className='row' >
           <center>
             <button className='submissonButton' type="button" name="submit-button" onClick={this.handleSubmitClicked}> Submit</button>
@@ -203,9 +230,9 @@ class App extends React.Component {
             <button className='cancelButton' type="button" name="cancel-button" onClick={this.handleCancelClicked}> Cancel</button>
           </center>
         </div>
+
+       
       </div>
-     
-      
     </div>
     )
   }
