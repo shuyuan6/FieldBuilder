@@ -3,6 +3,8 @@ import "./App.css";
 
 const displayOrders = ['alphabetical', 'reverse-alphabetical', 'random']
 const questionTypes = ['Single Choice', 'Multi Choice']
+const warningColor = 'red'
+const successColor = 'green'
 
 const initialState = {
   choices: [],
@@ -13,7 +15,7 @@ const initialState = {
   type: questionTypes[0],
   order: displayOrders[0],
   message: '',
-  messageColor: 'red',
+  messageColor: warningColor,
 }
 
 class App extends React.Component {
@@ -48,16 +50,16 @@ class App extends React.Component {
 
   isValid(toSend) {
     if (toSend['label'] === '') {
-      this.setState({message: 'Label is empty. Please fix and resubmit.', messageColor: 'red'})
+      this.setState({message: 'Label is empty. Please fix and resubmit.', messageColor: warningColor})
       return false
     } else if (toSend['choices'].length === 0) {
-      this.setState({message: 'Choices are empty. Please fix and resubmit.', messageColor: 'red'})
+      this.setState({message: 'Choices are empty. Please fix and resubmit.', messageColor: warningColor})
       return false
     } else if (toSend['choices'].length > 50) {
-      this.setState({message: 'You cannot provide more than 50 choices. Please fix and resubmit.', messageColor: 'red'})
+      this.setState({message: 'You cannot provide more than 50 choices. Please fix and resubmit.', messageColor: warningColor})
       return false
     } else {
-      this.setState({message: 'Congratulations! Submitted succesfully', messageColor: 'green'})
+      this.setState({message: 'Congratulations! Submitted succesfully', messageColor: successColor})
       setTimeout(function(){
         this.setState({message: ''})
       }.bind(this),2000); 
@@ -80,7 +82,7 @@ class App extends React.Component {
   }
 
   handleSetDefaultChoiceClicked(e, item) {
-    console.log(`Delte Choice clicked for [${item}] ${typeof(item)}`)
+    console.log(`Default Choice clicked for [${item}] ${typeof(item)}`)
     this.setState(state=>{
       return {defaultChoice: item}
     })
@@ -97,16 +99,23 @@ class App extends React.Component {
     
     if (index !== -1) {
       array.splice(index, 1);
-      this.setState(state => {
-        return {choices: array, defaultChoice: newDefaultChoice}
-      })
+      this.setState({choices: array, defaultChoice: newDefaultChoice})
     }
   }
 
   handleOrderChange(e) {
-    console.log("Order changed!")
+    console.log('Order changed!')
+    var array = [...this.state.choices]
+    //var sortedArray
+    if (e.target.value === 'alphabetical') {
+      array.sort();
+    } else if (e.target.value === 'reverse-alphabetical') {
+      array.reverse();
+    } else {
+      array.sort((a,b) => {return 0.5 - Math.random()});
+    }
     this.setState(state => {
-      return {order: e.target.value}
+      return {order: e.target.value, choices: array}
     })
   }
 
@@ -187,7 +196,15 @@ class App extends React.Component {
           <label className='leftColumn'>A Value is Required </label>
           <input type="checkbox" onChange={this.handleValueRequiredChecked} checked={this.state.valueRequired}></input>
         </div>
-        
+
+        <div className='row'>
+          <label className='leftColumn' >New Choice </label>
+          <div className='rightColumn'>
+            <textarea className='newChoiceTextField' value={this.state.newChoice} onChange={this.handleNewChoiceTextChanged} cols="40" rows="5"></textarea>
+            <button className='addChoiceButton' type="button" onClick={this.handleAddChoiceClicked}>Add</button>
+          </div>
+        </div>
+
         <div className='row'>
           <label className='leftColumn'>Choices</label>
           <ul className='rightColumn' className='choices'>
@@ -199,14 +216,6 @@ class App extends React.Component {
               </li>
             )}
           </ul>
-        </div>
-
-        <div className='row'>
-          <label className='leftColumn' >New Choice </label>
-          <div className='rightColumn'>
-            <textarea className='newChoiceTextField' value={this.state.newChoice} onChange={this.handleNewChoiceTextChanged} cols="40" rows="5"></textarea>
-            <button className='addChoiceButton' type="button" onClick={this.handleAddChoiceClicked}>Add</button>
-          </div>
         </div>
 
         <div className='row'>

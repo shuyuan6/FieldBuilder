@@ -47,7 +47,6 @@ ul {
   float: left;
   width: 70%;
   height: 40px;
-  
 }
 
 .row:after {
@@ -102,12 +101,6 @@ ul {
   pointer-events: none;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
 .inner {
   display: inline;
   margin-left: 2px;
@@ -147,13 +140,4 @@ ul {
 
 .App-link {
   color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
 }
