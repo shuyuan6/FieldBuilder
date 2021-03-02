@@ -83,9 +83,7 @@ class App extends React.Component {
 
   handleSetDefaultChoiceClicked(e, item) {
     console.log(`Default Choice clicked for [${item}] ${typeof(item)}`)
-    this.setState(state=>{
-      return {defaultChoice: item}
-    })
+    this.setState({defaultChoice: item})
   }
 
   handleDeleteChoiceClicked(e, item) {
@@ -114,44 +112,31 @@ class App extends React.Component {
     } else {
       array.sort((a,b) => {return 0.5 - Math.random()});
     }
-    this.setState(state => {
-      return {order: e.target.value, choices: array}
-    })
+    this.setState({order: e.target.value, choices: array})
   }
 
   handleTypeSelected(e) {
-    const { name, value } = e.target;
     console.log("Radio button selected")
-    this.setState(state => {
-      return {type: value}
-    })
+    this.setState({type: e.target.value})
   }
 
   handleValueRequiredChecked(e) {
     var checked = e.target.checked;
     console.log("Checked: " + checked)
-    this.setState(state => {
-      return {valueRequired: checked}
-    })
+    this.setState({valueRequired: checked})
   }
 
   handleCancelClicked(e) {
     console.log('Cancel clicked. Clearing all fields')
-    this.setState(state => {
-      return Object.assign({}, initialState);
-    })
+    this.setState(Object.assign({}, initialState))
   }
 
   handleLabelTextChanged(e) {
-    this.setState(state => {
-      return {label: e.target.value}
-    })
+    this.setState({label: e.target.value})
   }
 
   handleNewChoiceTextChanged(e) {
-    this.setState(state => {
-      return {newChoice: e.target.value}
-    })
+    this.setState({newChoice: e.target.value})
   }
 
   handleAddChoiceClicked(e) {
